@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import BottomNav from './BottomNav';
 import GlobalSearch from './GlobalSearch';
 import FeedbackWidget from './FeedbackWidget';
 
@@ -44,6 +45,7 @@ const AppLayout = () => {
       </div>
 
       <FeedbackWidget />
+      <BottomNav />
     </div>
   );
 };

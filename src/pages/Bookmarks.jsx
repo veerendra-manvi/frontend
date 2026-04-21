@@ -41,12 +41,17 @@ const Bookmarks = () => {
       </header>
 
       {bookmarks.length === 0 ? (
-        <div className="no-content glass-card">
-           <Bookmark size={48} className="text-secondary" style={{ opacity: 0.2 }} />
-           <h2>No bookmarked topics yet.</h2>
-           <p>Topics you bookmark will appear here for easy access.</p>
-           <Link to="/categories" className="start-btn" style={{ maxWidth: '200px', margin: '24px auto' }}>
-             Browse Topics
+        <div className="flex flex-col items-center justify-center p-20 bg-dark-sidebar/40 border border-white/5 rounded-[3rem] text-center space-y-8 animate-in fade-in zoom-in duration-500">
+           <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center text-slate-700 relative">
+              <Bookmark size={48} className="relative z-10" />
+              <div className="absolute inset-0 bg-brand-primary/10 blur-2xl rounded-full scale-150 opacity-50" />
+           </div>
+           <div className="space-y-2">
+              <h2 className="text-3xl font-black text-white italic">Your library is silent.</h2>
+              <p className="text-slate-500 font-medium max-w-sm">Start bookmarking challenging topics to build your personalized study deck and master Java faster.</p>
+           </div>
+           <Link to="/categories" className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-black uppercase tracking-widest hover:scale-110 active:scale-95 transition-all shadow-xl shadow-brand-primary/20">
+             Explore Chapters
            </Link>
         </div>
       ) : (
