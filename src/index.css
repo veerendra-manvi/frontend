@@ -1,13 +1,6 @@
-@import "tailwindcss";
-
-@theme {
-  --color-brand-primary: #f89820;
-  --color-brand-secondary: #5382a1;
-  --color-dark-bg: #0b0d12;
-  --color-dark-sidebar: #11141d;
-  --color-dark-card: #1a1d27;
-  --color-dark-border: rgba(255, 255, 255, 0.08);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --primary: #f89820;
@@ -34,7 +27,6 @@
     border-radius: 4px;
   }
 }
-
 
 a {
   text-decoration: none;
@@ -84,10 +76,10 @@ ul {
 .glass-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius);
+  border-radius: 12px;
   padding: 24px;
-  box-shadow: var(--shadow-lg);
-  transition: var(--transition);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .glass-card:hover {
@@ -103,8 +95,8 @@ ul {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--primary);
   margin-bottom: 12px;
 }
