@@ -13,7 +13,7 @@ const Lessons = () => {
   useEffect(() => {
     const fetchLessons = async () => {
       try {
-        const response = await api.get(`/learning/lessons/topic/${topicId}`);
+        const response = await api.get(`/api/learning/lessons/topic/${topicId}`);
         setLessons(response.data);
       } catch (error) {
         console.error('Failed to fetch lessons', error);

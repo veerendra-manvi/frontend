@@ -18,7 +18,7 @@ const SearchResults = () => {
   const handleSearch = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get(`/search/topics?keyword=${query}`);
+      const response = await api.get(`/api/search/topics?keyword=${query}`);
       setResults(response.data);
     } catch (error) {
       console.error('Search failed', error);

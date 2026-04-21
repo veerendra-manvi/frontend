@@ -11,7 +11,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await api.get('/learning/categories');
+        const response = await api.get('/api/learning/categories');
         setCategories(response.data);
       } catch (error) {
         console.error('Failed to fetch categories', error);

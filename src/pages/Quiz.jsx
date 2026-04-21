@@ -16,7 +16,7 @@ const Quiz = () => {
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const response = await api.get(`/quiz/topic/${topicId}`);
+        const response = await api.get(`/api/quiz/topic/${topicId}`);
         setQuestions(response.data);
       } catch (error) {
         console.error('Failed to fetch quiz', error);
@@ -39,7 +39,7 @@ const Quiz = () => {
     }
 
     try {
-      const response = await api.post('/quiz/submit', {
+      const response = await api.post('/api/quiz/submit', {
         topicId,
         answers: selectedOptions
       });

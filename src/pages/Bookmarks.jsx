@@ -13,7 +13,7 @@ const Bookmarks = () => {
 
   const fetchBookmarks = async () => {
     try {
-      const response = await api.get('/bookmarks/me');
+      const response = await api.get('/api/bookmarks/me');
       setBookmarks(response.data);
     } catch (error) {
       console.error('Failed to fetch bookmarks', error);
@@ -24,7 +24,7 @@ const Bookmarks = () => {
 
   const removeBookmark = async (topicId) => {
     try {
-      await api.delete(`/bookmarks/${topicId}`);
+      await api.delete(`/api/bookmarks/${topicId}`);
       setBookmarks(bookmarks.filter(b => b.id !== topicId));
     } catch (error) {
       console.error('Failed to remove bookmark', error);

@@ -14,11 +14,11 @@ const Topics = () => {
     const fetchData = async () => {
       try {
         // Fetch topics
-        const topicsRes = await api.get(`/learning/topics/category/${categoryId}`);
+        const topicsRes = await api.get(`/api/learning/topics/category/${categoryId}`);
         setTopics(topicsRes.data);
 
         // Fetch categories to find the name of the current one
-        const catsRes = await api.get('/learning/categories');
+        const catsRes = await api.get('/api/learning/categories');
         const currentCat = catsRes.data.find(c => c.id.toString() === categoryId);
         if (currentCat) setCategoryName(currentCat.name);
       } catch (error) {
@@ -34,7 +34,7 @@ const Topics = () => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      await api.post(`/bookmarks/${topicId}`);
+      await api.post(`/api/bookmarks/${topicId}`);
       // In a real app, I'd update the local state to show it's bookmarked
       alert('Topic added to your bookmarks!');
     } catch (error) {

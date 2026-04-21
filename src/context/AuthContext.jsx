@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
   async function fetchUser() {
     try {
-      const res = await api.get("/dashboard/me");
+      const res = await api.get("/api/dashboard/me");
       setUser(res.data);
     } catch (error) {
       console.log("Fetch user failed:", error);
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   async function login(credentials) {
-    const res = await api.post("/users/login", credentials);
+    const res = await api.post("/api/users/login", credentials);
 
     console.log("Login response:", res.data);
 
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   async function register(userData) {
-    const res = await api.post("/users/register", userData);
+    const res = await api.post("/api/users/register", userData);
     return res.data;
   }
 
