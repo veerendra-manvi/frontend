@@ -62,6 +62,7 @@ const Roadmap = () => {
       };
     });
   }, [completedLessons]);
+
   return (
     <div className="max-w-4xl mx-auto py-10 px-4">
       <SectionTitle 
@@ -133,15 +134,36 @@ const Roadmap = () => {
                           height="h-1.5" 
                         />
                         
-                                   <span className={lesson.completed ? 'text-slate-400' : 'text-slate-300 font-semibold'}>{lesson.title}</span>
-                                 </div>
-                                 <ChevronRight size={14} className="text-slate-600 opacity-0 group-hover/lesson:opacity-100 transition-opacity" />
-                              </div>
-                            ))}
-                            {module.lessons.length > 3 && (
-                              <p className="text-[10px] text-slate-500 font-bold uppercase pt-1 tracking-widest">+ {module.lessons.length - 3} more lessons</p>
-                            )}
-                         </div>
+                        <div className="mt-6 space-y-1">
+                           {module.lessons.slice(0, 3).map((lesson) => (
+                             <div 
+                               key={lesson.slug} 
+                               className="flex items-center justify-between group/lesson py-1.5 px-2 -ml-2 rounded-lg hover:bg-white/5 transition-colors duration-200 cursor-pointer"
+                             >
+                               <div className="flex items-center gap-2.5">
+                                 {lesson.completed ? (
+                                   <CheckCircle2 size={14} className="text-emerald-500" />
+                                 ) : (
+                                   <Circle size={14} className="text-slate-700" />
+                                 )}
+                                 <span className={`text-xs ${lesson.completed ? 'text-slate-500' : 'text-slate-300 font-semibold'}`}>
+                                    {lesson.title}
+                                 </span>
+                               </div>
+                               <ChevronRight size={14} className="text-brand-primary opacity-0 group-hover/lesson:opacity-100 group-hover/lesson:translate-x-0.5 transition-all" />
+                             </div>
+                           ))}
+
+                           {module.lessons.length > 3 && (
+                             <div className="pt-4 flex items-center gap-3">
+                                <div className="h-px flex-1 bg-white/[0.03]" />
+                                <p className="text-[9px] text-slate-600 font-black uppercase tracking-[0.2em]">
+                                  + {module.lessons.length - 3} More Lessons
+                                </p>
+                                <div className="h-px flex-1 bg-white/[0.03]" />
+                             </div>
+                           )}
+                        </div>
                       </div>
                     )}
 
