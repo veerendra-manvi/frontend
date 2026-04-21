@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSlow, setIsSlow] = useState(false);
   const [authError, setAuthError] = useState(null);
 
   const fetchUser = useCallback(async () => {
@@ -14,30 +15,36 @@ export const AuthProvider = ({ children }) => {
       const res = await api.get("/api/dashboard/me");
       if (res.data) {
         setUser(res.data);
-      } else {
-        localStorage.removeItem("token");
-        setUser(null);
       }
     } catch (error) {
-      console.error("Critical Auth Error:", error);
-      setAuthError(error.message || "Backend unreachable");
-      localStorage.removeItem("token");
-      setUser(null);
+      console.error("Auth Handshake Interrupted:", error);
+      // We do NOT clear the token here anymore unless it's a 401/403 (handled in api.js)
+      // This allows the app to retry or show "Waking server" without kicking the user out
+      setAuthError(error.message || "Backend synchronization failed");
     } finally {
       setLoading(false);
+      setIsSlow(false);
     }
   }, []);
 
   useEffect(() => {
-    // 🛡️ Guard: Critical Startup Timeout Fallback
-    // Ensures the app never gets stuck on "Loading..." even if the network is dead
-    const watchdog = setTimeout(() => {
+    // 🛡️ Tactical Watchdogs
+    
+    // 1. Slow Server Detection (Waking server state)
+    const slowTimer = setTimeout(() => {
       if (loading) {
-        console.warn("Auth Timeout: Forcing load completion after 12 seconds.");
-        setLoading(false);
-        setAuthError("Authentication timed out. Site may be unstable.");
+        console.warn("Detected slow response. Waking server...");
+        setIsSlow(true);
       }
-    }, 12000);
+    }, 6000); // If taking > 6s, it's likely sleeping
+
+    // 2. Critical Hang Guard (Prevent infinite spinner)
+    const hangGuard = setTimeout(() => {
+      if (loading) {
+        console.warn("Auth cluster hang detected. Forcing load completion.");
+        setLoading(false);
+      }
+    }, 45000); 
 
     const token = localStorage.getItem("token");
     if (token && token !== "undefined" && token.trim() !== "") {
@@ -46,7 +53,10 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
 
-    return () => clearTimeout(watchdog);
+    return () => {
+      clearTimeout(slowTimer);
+      clearTimeout(hangGuard);
+    };
   }, [fetchUser, loading]);
 
   const login = async (credentials) => {
@@ -88,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, authError, login, register, logout, fetchUser }}
+      value={{ user, loading, isSlow, authError, login, register, logout, fetchUser }}
     >
       {children}
     </AuthContext.Provider>

@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../config/api.js';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000, // 🛡️ 10 second tactical timeout
+  timeout: 20000, // 🛡️ 20 second tactical timeout as requested
 });
 
 // Request interceptor to add the JWT token to headers
@@ -15,34 +15,30 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle token expiration or unauthorized access
+// Response interceptor with automatic retry and selective redirection
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // 🛡️ Guard: Critical Backend Unavailability / Timeout
-    if (error.code === 'ECONNABORTED' || !error.response) {
-      console.error("🏁 Backend cluster unreachable or handshake timed out.");
-      
-      // If we're not on a public page, redirect to login to avoid infinite loading
-      const publicPages = ['/login', '/register'];
-      if (!publicPages.some(page => window.location.pathname.startsWith(page))) {
-        console.warn("Forcing redirect to login due to backend unavailability.");
-        localStorage.removeItem('token');
-        window.location.href = '/login?error=timeout';
-      }
+  async (error) => {
+    const { config } = error;
+
+    // 🛡️ Automatic Retry Logic: Retry once for network errors or timeouts
+    // This handles the 'server waking' scenario without failing immediately
+    if (config && !config._retry && (error.code === 'ECONNABORTED' || !error.response)) {
+      config._retry = true;
+      console.warn("⏳ Backend latency detected. Initiating single-shot tactical retry...");
+      return api(config);
     }
 
-    // 🛡️ Guard: Unauthorized Access
+    // 🛡️ Guard: Unauthorized Access (ONLY redirect on real 401/403)
+    // Removed the redirect logic for !error.response to preserve startup stability
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      console.warn("🔒 Session expired or unauthorized. Purging local tokens.");
+      console.warn("🔒 Session unauthorized. Clearing access and redirecting.");
       localStorage.removeItem('token');
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
-        window.location.href = '/login?error=session_expired';
+        window.location.href = '/login?error=unauthorized';
       }
     }
     
