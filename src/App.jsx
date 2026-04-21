@@ -1,26 +1,26 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import AppLayout from './components/layout/AppLayout';
-import ErrorBoundary from './components/ErrorBoundary';
+import { AuthProvider } from './context/AuthContext.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import AppLayout from './components/layout/AppLayout.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 // Optimized Lazy Loading
-const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Categories = lazy(() => import('./pages/Categories'));
-const Topics = lazy(() => import('./pages/Topics'));
-const Lessons = lazy(() => import('./pages/Lessons'));
-const LessonExperience = lazy(() => import('./pages/LessonExperience'));
-const InterviewArena = lazy(() => import('./pages/InterviewArena'));
-const MistakesLab = lazy(() => import('./pages/MistakesLab'));
-const CodeArena = lazy(() => import('./pages/CodeArena'));
-const Roadmap = lazy(() => import('./pages/Roadmap'));
-const Quiz = lazy(() => import('./pages/Quiz'));
-const Bookmarks = lazy(() => import('./pages/Bookmarks'));
-const SearchResults = lazy(() => import('./pages/SearchResults'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+const Login = lazy(() => import('./pages/Login.jsx'));
+const Register = lazy(() => import('./pages/Register.jsx'));
+const Dashboard = lazy(() => import('./pages/DashBoard.jsx'));
+const Categories = lazy(() => import('./pages/Categories.jsx'));
+const Topics = lazy(() => import('./pages/Topics.jsx'));
+const Lessons = lazy(() => import('./pages/Lessons.jsx'));
+const LessonExperience = lazy(() => import('./pages/LessonExperience.jsx'));
+const InterviewArena = lazy(() => import('./pages/InterviewArena.jsx'));
+const MistakesLab = lazy(() => import('./pages/MistakesLab.jsx'));
+const CodeArena = lazy(() => import('./pages/CodeArena.jsx'));
+const Roadmap = lazy(() => import('./pages/Roadmap.jsx'));
+const Quiz = lazy(() => import('./pages/Quiz.jsx'));
+const Bookmarks = lazy(() => import('./pages/Bookmarks.jsx'));
+const SearchResults = lazy(() => import('./pages/SearchResults.jsx'));
+const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
