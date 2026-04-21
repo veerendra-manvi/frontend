@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { CheckCircle2, ChevronRight, HelpCircle, RefreshCcw, Trophy } from 'lucide-react';
+import { CheckCircle2, ChevronRight, HelpCircle, RefreshCcw, Trophy, Target, Activity, Zap } from 'lucide-react';
+import { Badge, ProgressBar, Card, PrimaryButton } from '../components/ui';
 
 const Quiz = () => {
   const { topicId } = useParams();
@@ -34,7 +35,7 @@ const Quiz = () => {
 
   const handleSubmit = async () => {
     if (Object.keys(selectedOptions).length < questions.length) {
-      alert('Please answer all questions!');
+      alert('Operational Error: Please complete every assessment node before transmission.');
       return;
     }
 
@@ -50,30 +51,52 @@ const Quiz = () => {
     }
   };
 
-  if (isLoading) return <div className="loading-spinner">Loading quiz...</div>;
-  if (questions.length === 0) return <div>No quiz available for this topic.</div>;
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+       <div className="w-16 h-16 border-4 border-brand-primary/20 border-t-brand-primary rounded-full animate-spin" />
+       <p className="text-slate-500 font-black uppercase text-[10px] tracking-[0.3em] italic animate-pulse">Accessing Evaluation Cluster...</p>
+    </div>
+  );
+  
+  if (questions.length === 0) return (
+    <div className="flex flex-col items-center justify-center py-24 text-center space-y-8">
+       <div className="p-10 bg-white/2 rounded-full border-2 border-white/5"><HelpCircle className="w-[80px] h-[80px] text-slate-800" /></div>
+       <div className="space-y-4">
+          <h2 className="text-3xl font-black text-white italic tracking-tighter">DATA UNAVAILABLE</h2>
+          <p className="text-slate-500 font-bold italic tracking-wide">No evaluation units detected for this knowledge cluster.</p>
+       </div>
+       <PrimaryButton onClick={() => navigate('/categories')} className="px-10 py-4 font-black uppercase italic tracking-widest text-xs">Return to Grid</PrimaryButton>
+    </div>
+  );
 
   if (isSubmitted) {
+    const percentage = Math.round((score / (questions.length * 10)) * 100);
     return (
-      <div className="quiz-result fade-in">
-        <div className="glass-card result-card">
-          <Trophy size={64} className="primary-color result-icon" />
-          <h1>Quiz Completed!</h1>
-          <div className="score-display">
-            <span className="score-num">{score}</span>
-            <span className="score-total">/ {questions.length * 10}</span>
+      <div className="quiz-result fade-in py-12 p-6 lg:p-12">
+        <Card className="result-card bg-dark-sidebar/40 border-2 border-white/5 rounded-[4rem] p-12 lg:p-24 text-center space-y-12 relative overflow-hidden max-w-4xl mx-auto shadow-3xl">
+          <div className="absolute top-0 right-0 p-24 opacity-5 pointer-events-none -mr-20 -mt-20"><Trophy className="w-[400px] h-[400px] text-white" /></div>
+          <div className="w-32 h-32 bg-brand-primary/10 border-2 border-brand-primary/20 rounded-full flex items-center justify-center mx-auto mb-10 shadow-3xl shadow-brand-primary/10 relative z-10 hover:scale-110 transition-transform duration-700">
+             <Trophy className="w-[64px] h-[64px] text-brand-primary group-hover:rotate-12 transition-transform" />
           </div>
-          <p>Great job! You have successfully completed the assessment for this topic.</p>
-          <div className="result-actions">
-            <button className="action-btn primary" onClick={() => navigate('/categories')}>
-              Explore More Topics
-            </button>
-            <button className="action-btn secondary" onClick={() => window.location.reload()}>
-              <RefreshCcw size={18} />
-              Try Again
+          <div className="space-y-4 relative z-10">
+             <h1 className="text-5xl lg:text-8xl font-black text-white italic tracking-tighter leading-none uppercase">Sequence<br/><span className="text-brand-primary underline decoration-brand-primary/20 decoration-8 underline-offset-8">Synchronized</span></h1>
+          </div>
+          <div className="score-display flex flex-col items-center relative z-10 bg-white/2 py-10 rounded-[3rem] border-2 border-white/5 shadow-inner">
+            <span className="text-8xl lg:text-9xl font-black text-white tabular-nums tracking-tighter drop-shadow-3xl">{score}</span>
+            <span className="text-slate-700 font-black uppercase tracking-[0.4em] text-[10px] mt-4 italic">NEURAL XP SECURED / {questions.length * 10} LIMIT</span>
+          </div>
+          <p className="text-slate-400 font-bold italic text-lg leading-relaxed max-w-xl mx-auto relative z-10">
+             Synchronization successful. Node dominance increased by <span className="text-white underline decoration-brand-primary decoration-4 underline-offset-4">{percentage}%</span>. Data integrity verified against global JRE standards.
+          </p>
+          <div className="result-actions flex flex-wrap gap-8 justify-center pt-12 relative z-10">
+            <PrimaryButton className="px-16 py-6 text-[10px] font-black uppercase tracking-[0.3em] italic rounded-[2rem] shadow-2xl shadow-brand-primary/40 active:scale-95 transition-all" onClick={() => navigate('/categories')}>
+              Map Next Track
+            </PrimaryButton>
+            <button className="px-12 py-6 bg-white/2 hover:bg-white/5 text-slate-800 hover:text-white border-2 border-white/5 hover:border-white/10 rounded-[2rem] font-black uppercase tracking-[0.3em] text-[10px] italic transition-all flex items-center gap-4 active:scale-95 shadow-xl" onClick={() => window.location.reload()}>
+              <RefreshCcw className="w-[20px] h-[20px]" /> Re-Evaluate Node
             </button>
           </div>
-        </div>
+        </Card>
       </div>
     );
   }
@@ -82,195 +105,87 @@ const Quiz = () => {
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   return (
-    <div className="quiz-container fade-in">
-      <header className="page-header">
-         <div className="quiz-progress">
-           <div className="progress-info">
-             <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
-             <span>{Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}% Complete</span>
-           </div>
-           <div className="progress-track">
-             <div 
-               className="progress-fill" 
-               style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
-             ></div>
-           </div>
+    <div className="quiz-container max-w-5xl mx-auto space-y-12 pb-24 p-6 lg:p-12">
+      <header className="space-y-8">
+         <div className="flex justify-between items-end">
+            <div className="space-y-4">
+               <div className="flex items-center gap-4">
+                  <Badge variant="ghost" className="bg-brand-primary/10 text-brand-primary border-2 border-brand-primary/20 px-6 py-2 italic font-black uppercase tracking-[0.3em] text-[10px]">Neural Assessment Module</Badge>
+                  <div className="h-px w-20 bg-brand-primary/20" />
+               </div>
+               <h1 className="text-5xl lg:text-7xl font-black text-white italic tracking-tighter leading-none underline decoration-white/5 decoration-8 underline-offset-8">Evaluation Cluster</h1>
+            </div>
+            <div className="text-right hidden md:block">
+               <p className="text-[10px] font-black text-slate-700 uppercase tracking-[0.5em] italic leading-none">NODE {currentQuestionIndex + 1} OF 0{questions.length}</p>
+            </div>
          </div>
+         <ProgressBar progress={((currentQuestionIndex + 1) / questions.length) * 100} showLabel={false} height="h-3" />
       </header>
 
-      <div className="glass-card quiz-card">
-        <div className="question-header">
-           <HelpCircle className="question-icon" />
-           <h2>{currentQuestion.text}</h2>
+      <Card className="quiz-card bg-dark-sidebar/40 border-2 border-white/5 rounded-[4rem] p-10 lg:p-20 shadow-3xl relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-16 opacity-5 pointer-events-none group-hover:scale-125 transition-transform duration-1000">
+           <HelpCircle className="w-[150px] h-[150px] text-white" />
+        </div>
+        
+        <div className="question-header mb-16 relative z-10 pr-24">
+           <h2 className="text-3xl lg:text-5xl font-black text-white leading-tight italic tracking-tighter drop-shadow-xl">{currentQuestion.text}</h2>
         </div>
 
-        <div className="options-grid">
-          {currentQuestion.options.map((option, idx) => (
-            <div 
-              key={idx} 
-              className={`option-card ${selectedOptions[currentQuestion.id] === option ? 'selected' : ''}`}
-              onClick={() => handleOptionSelect(currentQuestion.id, option)}
-            >
-              <div className="option-letter">{String.fromCharCode(65 + idx)}</div>
-              <p>{option}</p>
-              <div className="option-check">
-                <CheckCircle2 size={20} />
+        <div className="options-grid grid gap-5 relative z-10">
+          {currentQuestion.options.map((option, idx) => {
+            const isSelected = selectedOptions[currentQuestion.id] === option;
+            return (
+              <div 
+                key={idx} 
+                className={`flex items-center gap-8 p-8 rounded-[2rem] border-2 transition-all cursor-pointer group/opt relative overflow-hidden h-24 ${isSelected ? 'bg-brand-primary border-brand-primary shadow-[0_20px_40px_rgba(248,152,32,0.3)] scale-[1.02]' : 'bg-white/1 border-white/5 hover:border-white/10 hover:bg-white/2'}`}
+                onClick={() => handleOptionSelect(currentQuestion.id, option)}
+              >
+                <div className={`absolute inset-0 bg-white/5 opacity-0 group-hover/opt:opacity-100 transition-opacity pointer-events-none`} />
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black italic text-sm transition-all border-2 ${isSelected ? 'bg-white/20 border-white/40 text-white' : 'bg-white/5 border-white/10 text-slate-800 group-hover/opt:border-white/20'}`}>
+                   {String.fromCharCode(65 + idx)}
+                </div>
+                <p className={`flex-1 font-bold italic tracking-tight text-lg transition-colors ${isSelected ? 'text-white' : 'text-slate-500 group-hover/opt:text-slate-300'}`}>{option}</p>
+                <div className={`transition-all duration-500 ${isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+                  <CheckCircle2 className="w-[32px] h-[32px] text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <div className="quiz-footer">
+        <div className="quiz-footer pt-16 border-t-2 border-white/5 mt-16 flex flex-col sm:flex-row justify-between items-center gap-10 relative z-10">
           <button 
-            className="quiz-nav-btn prev" 
+            className="w-full sm:w-auto px-10 py-5 bg-white/2 border-2 border-white/5 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.4em] text-slate-800 hover:text-white hover:border-white/10 disabled:opacity-20 transition-all italic active:scale-95 shadow-xl" 
             onClick={() => setCurrentQuestionIndex(prev => prev - 1)}
             disabled={currentQuestionIndex === 0}
           >
-            Previous
+            Reverse Vector
           </button>
           
           {isLastQuestion ? (
-            <button className="quiz-submit-btn" onClick={handleSubmit}>
-              Submit Quiz
-            </button>
+            <PrimaryButton className="w-full sm:w-auto h-20 px-16 text-xs font-black uppercase tracking-[0.3em] italic rounded-[2rem] shadow-2xl shadow-brand-primary/40 active:scale-95 transition-all" onClick={handleSubmit}>
+              Transmit Sequence
+            </PrimaryButton>
           ) : (
             <button 
-              className="quiz-nav-btn next" 
+              className={`w-full sm:w-auto h-20 px-12 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.4em] italic flex items-center justify-center gap-4 group transition-all active:scale-95 shadow-2xl ${selectedOptions[currentQuestion.id] ? 'bg-white/10 text-white border-2 border-white/20 hover:bg-brand-primary hover:border-brand-primary hover:shadow-brand-primary/20' : 'bg-white/2 text-slate-900 border-2 border-white/5 cursor-not-allowed opacity-40'}`} 
               onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
               disabled={!selectedOptions[currentQuestion.id]}
             >
-              Next Question
-              <ChevronRight size={18} />
+              Next Segment
+              <ChevronRight className="w-[24px] h-[24px] group-hover:translate-x-2 transition-transform" />
             </button>
           )}
         </div>
-      </div>
+      </Card>
 
-      <style>{`
-        .quiz-container { max-width: 800px; margin: 0 auto; }
-        
-        .quiz-progress { margin-bottom: 40px; }
-        
-        .progress-info {
-          display: flex;
-          justify-content: space-between;
-          font-size: 14px;
-          font-weight: 600;
-          color: var(--text-secondary);
-          margin-bottom: 12px;
-        }
-        
-        .progress-track {
-          height: 8px;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 4px;
-          overflow: hidden;
-        }
-        
-        .progress-fill {
-          height: 100%;
-          background: var(--primary);
-          transition: width 0.3s ease;
-        }
-        
-        .quiz-card { padding: 40px; }
-        
-        .question-header {
-          display: flex;
-          gap: 20px;
-          margin-bottom: 40px;
-        }
-        
-        .question-icon { color: var(--primary); flex-shrink: 0; margin-top: 5px; }
-        
-        .question-header h2 { font-size: 22px; line-height: 1.4; }
-        
-        .options-grid {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          margin-bottom: 40px;
-        }
-        
-        .option-card {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          padding: 20px;
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid var(--border-color);
-          border-radius: 12px;
-          cursor: pointer;
-          transition: var(--transition);
-        }
-        
-        .option-card:hover {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(248, 152, 32, 0.3);
-        }
-        
-        .option-card.selected {
-          border-color: var(--primary);
-          background: rgba(248, 152, 32, 0.1);
-        }
-        
-        .option-letter {
-          width: 32px;
-          height: 32px;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 700;
-          color: var(--text-secondary);
-        }
-        
-        .option-card.selected .option-letter {
-          background: var(--primary);
-          color: white;
-        }
-        
-        .option-card p { flex: 1; font-weight: 500; font-size: 15px; }
-        
-        .option-check { color: var(--primary); opacity: 0; transition: var(--transition); }
-        
-        .option-card.selected .option-check { opacity: 1; }
-        
-        .quiz-footer {
-          display: flex;
-          justify-content: space-between;
-          padding-top: 32px;
-          border-top: 1px solid var(--border-color);
-        }
-        
-        .quiz-nav-btn, .quiz-submit-btn {
-          padding: 12px 24px;
-          border-radius: 10px;
-          font-weight: 700;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          transition: var(--transition);
-        }
-        
-        .quiz-nav-btn { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); }
-        .quiz-nav-btn:hover:not(:disabled) { color: var(--primary); border-color: var(--primary); }
-        
-        .quiz-submit-btn { background: var(--primary); color: white; }
-        .quiz-submit-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
-        
-        /* Results Styling */
-        .result-card { text-align: center; padding: 60px; max-width: 600px; margin: 40px auto; }
-        .result-icon { margin-bottom: 24px; }
-        .score-display { margin: 24px 0; }
-        .score-num { font-size: 64px; font-weight: 800; color: var(--primary); }
-        .score-total { font-size: 24px; color: var(--text-secondary); font-weight: 600; }
-        .result-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
-        .action-btn { padding: 14px 28px; border-radius: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .action-btn.primary { background: var(--primary); color: white; }
-        .action-btn.secondary { background: var(--glass-bg); color: var(--text-primary); border: 1px solid var(--border-color); }
-      `}</style>
+      {/* Decorative Branding */}
+      <div className="fixed bottom-0 left-0 p-12 opacity-5 pointer-events-none select-none">
+         <Target className="w-[400px] h-[400px] text-white" />
+      </div>
+      <div className="fixed top-24 right-0 p-20 opacity-5 pointer-events-none select-none">
+         <Activity className="w-[300px] h-[300px] text-white rotate-45" />
+      </div>
     </div>
   );
 };

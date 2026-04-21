@@ -9,8 +9,9 @@ import {
   User, 
   LogOut, 
   ChevronLeft,
-  Menu,
-  Coffee
+  Coffee,
+  Zap,
+  Target
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -23,18 +24,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
     navigate('/login');
   };
 
-  const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: Map, label: 'Java Roadmap', path: '/roadmap' },
-    { icon: BookOpen, label: 'Lessons', path: '/lessons' },
-    { icon: Code2, label: 'Practice', path: '/practice' },
-    { icon: Trophy, label: 'Quiz Arena', path: '/quiz-arena' },
-    { icon: User, label: 'Profile', path: '/profile' },
-  ];
-
   const sidebarClasses = `
-    fixed top-0 left-0 h-full bg-dark-sidebar border-r border-dark-border z-50 transition-all duration-300 ease-in-out
-    ${isCollapsed ? 'w-20' : 'w-64'}
+    fixed top-0 left-0 h-full bg-dark-sidebar border-r border-white/5 z-50 transition-all duration-500 ease-in-out shadow-[10px_0_30px_rgba(0,0,0,0.5)]
+    ${isCollapsed ? 'w-20' : 'w-72'}
     ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
   `;
 
@@ -42,79 +34,101 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen })
     <>
       {/* Mobile Overlay */}
       {isMobileOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 bg-black/80 z-40 lg:hidden backdrop-blur-xl"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
 
       <aside className={sidebarClasses}>
         {/* Logo Section */}
-        <div className={`flex items-center h-16 px-6 border-b border-dark-border ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="p-2 bg-brand-primary/10 rounded-xl group">
-              <Coffee className="w-6 h-6 text-brand-primary group-hover:scale-110 transition-transform" />
+        <div className={`flex items-center h-24 px-6 border-b border-white/5 bg-dark-bg/20 ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+          <div className="flex items-center gap-4 overflow-hidden">
+            <div className="p-3 bg-brand-primary/10 rounded-2xl group border border-brand-primary/20 shadow-lg shadow-brand-primary/5">
+              <Coffee className="w-[24px] h-[24px] text-brand-primary group-hover:rotate-12 transition-transform" />
             </div>
             {!isCollapsed && (
-              <span className="font-bold text-lg tracking-tight whitespace-nowrap bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
-                JavaMastery
-              </span>
+              <div className="flex flex-col">
+                <span className="font-black text-xl tracking-tighter italic text-white leading-none">
+                  JAVA<span className="text-brand-primary">MASTERY</span>
+                </span>
+                <span className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-700 mt-1 italic">Production Hub</span>
+              </div>
             )}
           </div>
           
-          {/* Collapse Toggle for Desktop */}
-          <button 
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden lg:flex p-1.5 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition-colors"
-          >
-            <ChevronLeft className={`w-5 h-5 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} />
-          </button>
+          {!isCollapsed && (
+            <button 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="p-2 hover:bg-white/5 rounded-xl text-slate-700 hover:text-white transition-all border border-transparent hover:border-white/10"
+            >
+              <ChevronLeft className="w-[20px] h-[20px]" />
+            </button>
+          )}
         </div>
 
         {/* Navigation Section */}
-        <nav className="p-4 space-y-2">
+        <nav className="p-5 space-y-3 mt-4">
           {!isCollapsed && (
-            <p className="px-2 pb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-              Main Menu
+            <p className="px-4 pb-4 text-[9px] font-black uppercase tracking-[0.3em] text-slate-700 italic flex items-center gap-2">
+               <Zap className="w-[12px] h-[12px]" /> Primary Protocol
             </p>
           )}
           
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) => `
-                flex items-center gap-4 px-3 py-2.5 rounded-xl transition-all duration-200 group
-                ${isActive 
-                  ? 'bg-brand-primary/10 text-brand-primary' 
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }
-              `}
-            >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              {!isCollapsed && (
-                <span className="font-medium text-sm whitespace-nowrap">{item.label}</span>
-              )}
-              {isCollapsed && (
-                <div className="fixed left-20 bg-dark-sidebar border border-dark-border px-3 py-1.5 rounded-md text-xs opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-[60]">
-                  {item.label}
-                </div>
-              )}
-            </NavLink>
-          ))}
+          <NavLink to="/" className={({ isActive }) => `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 relative group ${isActive ? 'bg-brand-primary/10 text-brand-primary shadow-xl shadow-brand-primary/5' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+            <LayoutDashboard className="w-[20px] h-[20px] flex-shrink-0" />
+            {!isCollapsed && <span className="text-sm font-bold italic tracking-tight">System Dashboard</span>}
+            {isCollapsed && <div className="absolute left-full ml-4 px-3 py-1 bg-dark-sidebar border border-white/10 rounded-lg text-xs font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">Dashboard</div>}
+          </NavLink>
+
+          <NavLink to="/roadmap" className={({ isActive }) => `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 relative group ${isActive ? 'bg-brand-primary/10 text-brand-primary shadow-xl shadow-brand-primary/5' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+            <Map className="w-[20px] h-[20px] flex-shrink-0" />
+            {!isCollapsed && <span className="text-sm font-bold italic tracking-tight">Intelligence Map</span>}
+            {isCollapsed && <div className="absolute left-full ml-4 px-3 py-1 bg-dark-sidebar border border-white/10 rounded-lg text-xs font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">Roadmap</div>}
+          </NavLink>
+
+          <NavLink to="/lessons" className={({ isActive }) => `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 relative group ${isActive ? 'bg-brand-primary/10 text-brand-primary shadow-xl shadow-brand-primary/5' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+            <BookOpen className="w-[20px] h-[20px] flex-shrink-0" />
+            {!isCollapsed && <span className="text-sm font-bold italic tracking-tight">Module Archive</span>}
+            {isCollapsed && <div className="absolute left-full ml-4 px-3 py-1 bg-dark-sidebar border border-white/10 rounded-lg text-xs font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">Lessons</div>}
+          </NavLink>
+
+          <NavLink to="/practice" className={({ isActive }) => `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 relative group ${isActive ? 'bg-brand-primary/10 text-brand-primary shadow-xl shadow-brand-primary/5' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+            <Code2 className="w-[20px] h-[20px] flex-shrink-0" />
+            {!isCollapsed && <span className="text-sm font-bold italic tracking-tight">Combat Arena</span>}
+            {isCollapsed && <div className="absolute left-full ml-4 px-3 py-1 bg-dark-sidebar border border-white/10 rounded-lg text-xs font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">Practice</div>}
+          </NavLink>
+
+          <NavLink to="/quiz-arena" className={({ isActive }) => `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 relative group ${isActive ? 'bg-brand-primary/10 text-brand-primary shadow-xl shadow-brand-primary/5' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+            <Trophy className="w-[20px] h-[20px] flex-shrink-0" />
+            {!isCollapsed && <span className="text-sm font-bold italic tracking-tight">Elite Quizzes</span>}
+            {isCollapsed && <div className="absolute left-full ml-4 px-3 py-1 bg-dark-sidebar border border-white/10 rounded-lg text-xs font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">Quizzes</div>}
+          </NavLink>
+
+          {!isCollapsed && (
+            <p className="px-4 pt-8 pb-4 text-[9px] font-black uppercase tracking-[0.3em] text-slate-700 italic flex items-center gap-2">
+               <Target className="w-[12px] h-[12px]" /> Personal Cluster
+            </p>
+          )}
+
+          <NavLink to="/profile" className={({ isActive }) => `flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 relative group ${isActive ? 'bg-brand-primary/10 text-brand-primary shadow-xl shadow-brand-primary/5' : 'text-slate-500 hover:text-slate-200 hover:bg-white/5'}`}>
+            <User className="w-[20px] h-[20px] flex-shrink-0" />
+            {!isCollapsed && <span className="text-sm font-bold italic tracking-tight">Identity Node</span>}
+            {isCollapsed && <div className="absolute left-full ml-4 px-3 py-1 bg-dark-sidebar border border-white/10 rounded-lg text-xs font-bold text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">Profile</div>}
+          </NavLink>
+
         </nav>
 
         {/* Footer Section */}
-        <div className="absolute bottom-0 left-0 w-full p-4 border-t border-dark-border bg-dark-sidebar/50 backdrop-blur-md">
+        <div className="absolute bottom-0 left-0 w-full p-6 border-t border-white/5 bg-dark-sidebar/40 backdrop-blur-3xl">
           <button 
             onClick={handleLogout}
-            className={`
-              flex items-center gap-4 w-full px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-500/10 transition-colors
-              ${isCollapsed ? 'justify-center' : ''}
-            `}
+            className={`flex items-center gap-4 w-full px-4 py-4 rounded-2xl text-rose-500/80 hover:text-rose-500 hover:bg-rose-500/10 transition-all font-black uppercase text-[10px] tracking-[0.2em] italic ${isCollapsed ? 'justify-center' : ''}`}
           >
-            <LogOut className="w-5 h-5 flex-shrink-0" />
-            {!isCollapsed && <span className="font-medium text-sm">Logout</span>}
+            <LogOut className="w-[20px] h-[20px] flex-shrink-0" />
+            {!isCollapsed && <span>Deauthenticate</span>}
           </button>
         </div>
       </aside>

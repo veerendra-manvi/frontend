@@ -10,26 +10,26 @@ const NotFound = () => {
     <div className="min-h-screen bg-dark-bg flex items-center justify-center p-8">
        <div className="max-w-lg w-full text-center space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="relative">
-             <div className="text-[180px] font-black leading-none text-white/5 select-none">404</div>
+             <div className="text-[180px] font-black leading-none text-white/5 select-none italic tracking-tighter">404</div>
              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-32 h-32 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary animate-pulse shadow-2xl shadow-brand-primary/20">
-                   <Compass size={64} />
+                <div className="w-32 h-32 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary animate-pulse shadow-2xl shadow-brand-primary/20 border border-brand-primary/20">
+                   <Compass className="w-[64px] h-[64px]" />
                 </div>
              </div>
           </div>
           
           <div className="space-y-4">
-             <h1 className="text-4xl font-black text-white italic">Object Not Found.</h1>
-             <p className="text-slate-500 font-medium max-w-sm mx-auto">
-                The content you're looking for doesn't exist in the Javamastery classpath. Let's get you back to the main thread.
+             <h1 className="text-4xl font-black text-white italic">Class Not Found.</h1>
+             <p className="text-slate-500 font-medium max-w-sm mx-auto italic">
+                The resource you're looking for was not found in the JavaMastery classpath. Let's redirect you back to the main thread.
              </p>
           </div>
 
           <PrimaryButton 
             onClick={() => navigate('/')} 
-            className="px-12 h-16 gap-3"
+            className="px-12 h-16 gap-3 shadow-xl shadow-brand-primary/20"
           >
-             <Home size={20} /> Back to Dashboard
+             <Home className="w-[20px] h-[20px]" /> Back to Dashboard
           </PrimaryButton>
        </div>
     </div>

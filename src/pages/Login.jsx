@@ -30,17 +30,17 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card fade-in">
         <div className="auth-logo">
-          <Coffee size={40} className="primary-color" />
-          <h1>JavaMastery</h1>
+          <Coffee className="primary-color w-[40px] h-[40px]" />
+          <h1 className="italic tracking-tighter">JavaMastery</h1>
         </div>
         
-        <p className="auth-subtitle">Welcome back! Continue your Java journey.</p>
+        <p className="auth-subtitle italic">Welcome back! Continue your Java journey.</p>
         
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="auth-error">{error}</div>}
           
           <div className="input-group">
-            <Mail size={20} className="input-icon" />
+            <Mail className="input-icon w-[20px] h-[20px]" />
             <input 
               type="email" 
               placeholder="Email Address" 
@@ -51,7 +51,7 @@ const Login = () => {
           </div>
           
           <div className="input-group">
-            <Lock size={20} className="input-icon" />
+            <Lock className="input-icon w-[20px] h-[20px]" />
             <input 
               type="password" 
               placeholder="Password" 
@@ -61,13 +61,13 @@ const Login = () => {
             />
           </div>
           
-          <button type="submit" className="auth-btn" disabled={isLoading}>
-            {isLoading ? <Loader2 className="animate-spin" /> : 'Sign In'}
+          <button type="submit" className="auth-btn group" disabled={isLoading}>
+            {isLoading ? <Loader2 className="animate-spin w-[20px] h-[20px] mx-auto" /> : <span className="group-hover:tracking-widest transition-all">Sign In</span>}
           </button>
         </form>
         
         <p className="auth-footer">
-          Don't have an account? <Link to="/register">Create Account</Link>
+          Don't have an account? <Link to="/register" className="italic font-bold">Create Account</Link>
         </p>
       </div>
     </div>

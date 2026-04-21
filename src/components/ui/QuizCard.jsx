@@ -60,9 +60,9 @@ const QuizCard = ({ questions = [], onComplete }) => {
     return (
       <Card className="text-center py-12 px-8 max-w-lg mx-auto bg-gradient-to-br from-brand-primary/10 to-transparent animate-in zoom-in-95 duration-500">
         <div className="w-24 h-24 bg-brand-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_50px_rgba(248,152,32,0.2)]">
-          <Trophy size={48} className="text-brand-primary" />
+          <Trophy className="w-[48px] h-[48px] text-brand-primary" />
         </div>
-        <h2 className="text-3xl font-black text-white mb-2">Quiz Complete!</h2>
+        <h2 className="text-3xl font-black text-white mb-2 italic">Quiz Complete!</h2>
         <p className="text-slate-500 mb-8 font-medium">You've mastered the fundamentals here.</p>
         
         <div className="flex justify-between items-center bg-white/5 p-6 rounded-2xl mb-8 border border-white/5">
@@ -78,7 +78,7 @@ const QuizCard = ({ questions = [], onComplete }) => {
 
         <div className="flex gap-4">
            <SecondaryButton onClick={handleRetry} className="flex-1 py-4">
-              <RotateCcw size={18} /> Retry Quiz
+              <RotateCcw className="w-[18px] h-[18px]" /> Retry Quiz
            </SecondaryButton>
            <PrimaryButton className="flex-1 py-4" onClick={() => window.history.back()}>
               Continue Learning
@@ -93,11 +93,11 @@ const QuizCard = ({ questions = [], onComplete }) => {
       {/* 1. Header & Progress */}
       <div className="bg-white/5 px-6 py-4 flex justify-between items-center border-b border-white/5">
         <div className="flex items-center gap-3">
-           <HelpCircle size={18} className="text-brand-primary" />
+           <HelpCircle className="w-[18px] h-[18px] text-brand-primary" />
            <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Question {currentIndex + 1} of {questions.length}</span>
         </div>
         <Badge variant="ghost" className="flex items-center gap-1.5">
-           <BarChart3 size={12} /> Score: {score}
+           <BarChart3 className="w-[12px] h-[12px]" /> Score: {score}
         </Badge>
       </div>
       <ProgressBar progress={((currentIndex + 1) / questions.length) * 100} showLabel={false} height="h-1" />
@@ -112,7 +112,7 @@ const QuizCard = ({ questions = [], onComplete }) => {
             exit={{ x: -20, opacity: 0 }}
             className="space-y-8"
           >
-            <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+            <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight italic">
                {currentQuestion.question}
             </h3>
 
@@ -140,8 +140,8 @@ const QuizCard = ({ questions = [], onComplete }) => {
                    >
                      <span className="pr-8">{option}</span>
                      <div className="flex gap-2">
-                        {showFeedback && isCorrect && <CheckCircle2 size={24} className="text-emerald-500" />}
-                        {showFeedback && isSelected && !isCorrect && <XCircle size={24} className="text-rose-500" />}
+                        {showFeedback && isCorrect && <CheckCircle2 className="w-[24px] h-[24px] text-emerald-500" />}
+                        {showFeedback && isSelected && !isCorrect && <XCircle className="w-[24px] h-[24px] text-rose-500" />}
                         {!showFeedback && (
                           <div className={`w-6 h-6 rounded-full border-2 transition-all ${isSelected ? 'bg-brand-primary border-brand-primary scale-110' : 'border-white/10 group-hover:border-white/30'}`} />
                         )}
@@ -163,18 +163,20 @@ const QuizCard = ({ questions = [], onComplete }) => {
             >
                <div className="flex gap-4">
                   <div className="p-2 bg-brand-primary/10 rounded-lg h-fit">
-                     <CheckCircle2 size={16} className="text-brand-primary" />
+                     <CheckCircle2 className="w-[16px] h-[16px] text-brand-primary" />
                   </div>
                   <div className="space-y-4">
                      <div>
-                        <h4 className="text-white font-bold text-sm mb-1 uppercase tracking-widest">Why is this correct?</h4>
+                        <h4 className="text-white font-bold text-sm mb-1 uppercase tracking-widest italic">Why is this correct?</h4>
                         <p className="text-slate-400 text-sm leading-relaxed font-medium">
                            {currentQuestion.explanation}
                         </p>
                      </div>
-                     <PrimaryButton onClick={handleNext} className="w-full sm:w-auto">
-                        {currentIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
-                        <ChevronRight size={18} />
+                     <PrimaryButton onClick={handleNext} className="w-full sm:w-auto mt-4">
+                        <span className="flex items-center gap-2">
+                          {currentIndex === questions.length - 1 ? 'Finish Quiz' : 'Next Question'}
+                          <ChevronRight className="w-[18px] h-[18px]" />
+                        </span>
                      </PrimaryButton>
                   </div>
                </div>

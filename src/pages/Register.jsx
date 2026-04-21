@@ -21,7 +21,6 @@ const Register = () => {
     setError('');
     
     try {
-      // Direct payload mapping to ensure Spring Boot DTO compatibility
       const payload = {
         fullName: formData.fullName,
         email: formData.email,
@@ -32,14 +31,12 @@ const Register = () => {
       navigate('/login', { state: { message: 'Registration successful! Please login.' } });
     } catch (err) {
       console.error('Registration error:', err);
-      // Enhanced error handling for backend responses (Validation errors, Duplicate email, etc)
       if (err.response?.data) {
         if (typeof err.response.data === 'string') {
           setError(err.response.data);
         } else if (err.response.data.message) {
           setError(err.response.data.message);
         } else if (err.response.data.errors) {
-          // Handle Spring Boot validation errors array
           const validationMsg = Object.values(err.response.data.errors).join(', ');
           setError(validationMsg);
         } else {
@@ -57,17 +54,17 @@ const Register = () => {
     <div className="auth-container">
       <div className="auth-card fade-in">
         <div className="auth-logo">
-          <Coffee size={40} className="primary-color" />
-          <h1>JavaMastery</h1>
+          <Coffee className="primary-color w-[40px] h-[40px]" />
+          <h1 className="italic tracking-tighter">JavaMastery</h1>
         </div>
         
-        <p className="auth-subtitle">Join the community of Java experts.</p>
+        <p className="auth-subtitle italic">Join the community of Java experts.</p>
         
         <form onSubmit={handleSubmit} className="auth-form">
           {error && <div className="auth-error">{error}</div>}
           
           <div className="input-group">
-            <User size={20} className="input-icon" />
+            <User className="input-icon w-[20px] h-[20px]" />
             <input 
               name="fullName"
               type="text" 
@@ -79,7 +76,7 @@ const Register = () => {
           </div>
 
           <div className="input-group">
-            <Mail size={20} className="input-icon" />
+            <Mail className="input-icon w-[20px] h-[20px]" />
             <input 
               name="email"
               type="email" 
@@ -91,7 +88,7 @@ const Register = () => {
           </div>
           
           <div className="input-group">
-            <Lock size={20} className="input-icon" />
+            <Lock className="input-icon w-[20px] h-[20px]" />
             <input 
               name="password"
               type="password" 
@@ -103,18 +100,18 @@ const Register = () => {
             />
           </div>
           
-          <button type="submit" className="auth-btn" disabled={isLoading}>
+          <button type="submit" className="auth-btn group" disabled={isLoading}>
             {isLoading ? (
               <div className="flex items-center justify-center gap-2">
-                <Loader2 className="animate-spin" size={18} />
+                <Loader2 className="animate-spin w-[18px] h-[18px]" />
                 <span>Creating Account...</span>
               </div>
-            ) : 'Register Now'}
+            ) : <span className="group-hover:tracking-widest transition-all">Register Now</span>}
           </button>
         </form>
         
         <p className="auth-footer">
-          Already have an account? <Link to="/login">Sign In</Link>
+          Already have an account? <Link to="/login" className="italic font-bold">Sign In</Link>
         </p>
       </div>
     </div>
