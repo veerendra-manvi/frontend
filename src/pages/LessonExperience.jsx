@@ -116,9 +116,8 @@ const LessonExperience = () => {
              checkedSections={checkedSections}
              onToggleSection={handleToggleSection}
              onFinish={() => {
-               useProgressStore.getState().completeLesson(slug);
+               useProgressStore.getState().completeLesson(null, slug);
                analytics.trackCompletion('LESSON', slug);
-               alert('System Integrity Verified: Lesson Synchronized. +200 Neural XP Secured.');
              }}
            />
         </div>

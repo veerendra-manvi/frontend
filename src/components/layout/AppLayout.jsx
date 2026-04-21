@@ -5,6 +5,7 @@ import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
 import GlobalSearch from './GlobalSearch';
 import FeedbackWidget from './FeedbackWidget';
+import XPToast from '../ui/XPToast';
 
 const AppLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -45,6 +46,7 @@ const AppLayout = () => {
       </div>
 
       <FeedbackWidget />
+      <XPToast />
       <BottomNav />
     </div>
   );

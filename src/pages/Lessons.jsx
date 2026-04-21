@@ -4,6 +4,7 @@ import api from '../services/api';
 import { ChevronLeft, ChevronRight, CheckCircle, Code as CodeIcon, HelpCircle, BookOpen, Activity, Play } from 'lucide-react';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Card, Badge, PrimaryButton, ProgressBar } from '../components/ui';
+import useProgressStore from '../store/useProgressStore';
 
 const Lessons = () => {
   const { topicId } = useParams();
@@ -11,6 +12,9 @@ const Lessons = () => {
   const [lessons, setLessons] = useState([]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Monitor store changes for UI reactivity
+  const completedLessons = useProgressStore((state) => state.completedLessons);
 
   useEffect(() => {
     const fetchLessons = async () => {
@@ -44,11 +48,14 @@ const Lessons = () => {
       />
     </div>
   );
-
+  
   const currentLesson = lessons[currentLessonIndex];
   const isLastLesson = currentLessonIndex === lessons.length - 1;
 
   const nextLesson = () => {
+    // 🛡️ Trigger completion logic
+    useProgressStore.getState().completeLesson(currentLesson.id, currentLesson.title);
+
     if (!isLastLesson) {
       setCurrentLessonIndex(prev => prev + 1);
       window.scrollTo(0, 0);
@@ -82,8 +89,14 @@ const Lessons = () => {
                 className={`p-5 rounded-2xl flex items-center gap-4 cursor-pointer transition-all border-2 group ${index === currentLessonIndex ? 'bg-brand-primary border-brand-primary text-white shadow-2xl shadow-brand-primary/20 scale-[1.05]' : 'text-slate-600 bg-white/1 border-white/5 hover:bg-white/5 hover:border-white/10'}`}
                 onClick={() => setCurrentLessonIndex(index)}
               >
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black italic text-[10px] border-2 transition-all ${index === currentLessonIndex ? 'bg-white/20 border-white/30 text-white' : index < currentLessonIndex ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-white/5 border-white/10'}`}>
-                  {index < currentLessonIndex ? <CheckCircle className="w-[14px] h-[14px]" /> : <span>0{index + 1}</span>}
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black italic text-[10px] border-2 transition-all ${
+                  index === currentLessonIndex 
+                    ? 'bg-white/20 border-white/30 text-white' 
+                    : completedLessons.includes(lesson.id)
+                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' 
+                      : 'bg-white/5 border-white/10'
+                }`}>
+                  {completedLessons.includes(lesson.id) ? <CheckCircle className="w-[14px] h-[14px]" /> : <span>0{index + 1}</span>}
                 </div>
                 <span className="flex-1 text-xs font-black truncate italic transition-colors group-hover:text-white leading-none">{lesson.title}</span>
               </li>

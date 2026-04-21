@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import api from '../services/api';
 
 const useProgressStore = create(
   persist(
@@ -16,13 +17,28 @@ const useProgressStore = create(
       masteredQuestions: [],
       solvedChallenges: [],
       weeklyGoal: { current: 0, target: 5 },
+      
+      // UI State for animations
+      recentXPChange: 0,
+      showXPToast: false,
 
-      solveChallenge: (id) => {
+      triggerXPToast: (amount) => {
+        set({ recentXPChange: amount, showXPToast: true });
+        setTimeout(() => set({ showXPToast: false }), 3000);
+      },
+
+      addXP: (amount) => {
+        set((state) => ({ xp: state.xp + amount }));
+        get().triggerXPToast(amount);
+      },
+
+      solveChallenge: async (id) => {
         set((state) => {
           if (state.solvedChallenges.includes(id)) return state;
-          get().addXP(500); // Massive bonus for coding challenge
+          get().addXP(500); 
           return { solvedChallenges: [...state.solvedChallenges, id] };
         });
+        // Optional backend sync here
       },
 
       toggleMastered: (id) => {
@@ -32,7 +48,7 @@ const useProgressStore = create(
             ? state.masteredQuestions.filter(q => q !== id)
             : [...state.masteredQuestions, id];
           
-          if (!isMastered) get().addXP(50); // Small bonus for mastery
+          if (!isMastered) get().addXP(50);
           
           return { masteredQuestions: next };
         });
@@ -40,10 +56,6 @@ const useProgressStore = create(
 
       setLastOpened: (slug) => {
         set({ lastOpenedLesson: slug });
-      },
-
-      addXP: (amount) => {
-        set((state) => ({ xp: state.xp + amount }));
       },
 
       incrementWeeklyProgress: () => {
@@ -59,12 +71,26 @@ const useProgressStore = create(
         });
       },
 
-      completeLesson: (slug) => {
+      completeLesson: async (lessonId, slug) => {
         const { completedLessons, addXP, incrementWeeklyProgress } = get();
-        if (!completedLessons.includes(slug)) {
-          set({ completedLessons: [...completedLessons, slug] });
+        
+        // 1. Instantly update UI for responsiveness
+        const lessonIdentifier = lessonId || slug;
+        if (!completedLessons.includes(lessonIdentifier)) {
+          set({ completedLessons: [...completedLessons, lessonIdentifier] });
           addXP(200);
           incrementWeeklyProgress();
+          
+          // 2. Sync with Backend
+          if (lessonId && !isNaN(lessonId)) {
+            try {
+              await api.post(`/api/lessons/${lessonId}/complete`);
+              console.log(`Backend sync complete for lesson: ${lessonId}`);
+            } catch (error) {
+              console.error("Failed to sync lesson completion with backend", error);
+              // We keep the local state even if sync fails for offline-first experience
+            }
+          }
         }
       },
 
@@ -76,14 +102,14 @@ const useProgressStore = create(
         }
       },
 
-      saveQuizScore: (quizId, data) => {
+      saveQuizScore: async (topicId, data) => {
         const { quizScores, addXP } = get();
-        const prevScore = quizScores[quizId]?.score || 0;
+        const prevScore = quizScores[topicId]?.score || 0;
         
         set((state) => ({
           quizScores: {
             ...state.quizScores,
-            [quizId]: { 
+            [topicId]: { 
               score: data.score, 
               total: data.total, 
               date: new Date().toLocaleDateString(),
@@ -98,12 +124,24 @@ const useProgressStore = create(
         }
 
         if (data.score === data.total) {
-          addXP(300); // Perfect score bonus
+          addXP(300); 
         }
+
+        // Sync quiz results to backend if needed
       }
     }),
     {
       name: 'javamastery-progress',
+      partialize: (state) => ({
+        completedLessons: state.completedLessons,
+        completedPractices: state.completedPractices,
+        quizScores: state.quizScores,
+        xp: state.xp,
+        streak: state.streak,
+        solvedChallenges: state.solvedChallenges,
+        weeklyGoal: state.weeklyGoal,
+        achievements: state.achievements
+      })
     }
   )
 );
